@@ -15,7 +15,7 @@ interface Recipe {
   created_at: string;
 }
 
-interface Profile {
+interface UserProfile {
   first_name: string;
   last_name: string;
   avatar_url: string;
@@ -28,12 +28,12 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [profile, setProfile] = useState<Profile>({
+  const [profile, setProfile] = useState<UserProfile>({
     first_name: "",
     last_name: "",
     avatar_url: "",
   });
-  const [form, setForm] = useState<Profile>({
+  const [form, setForm] = useState<UserProfile>({
     first_name: "",
     last_name: "",
     avatar_url: "",
