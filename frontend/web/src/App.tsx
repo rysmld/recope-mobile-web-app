@@ -8,6 +8,7 @@ import RecipeDetail from "./pages/RecipeDetails";
 import CreateRecipe from "./pages/CreateRecipe";
 import EditRecipe from "./pages/EditRecipe";
 import Profile from "./pages/Profile";
+import Pantry from "./pages/Pantry";
 
 function Navbar() {
   const { user, signOut } = useAuth();
@@ -133,6 +134,19 @@ function Navbar() {
             + Create
           </button>
           <button
+            onClick={() => navigate("/pantry")}
+            style={{
+              background: "none",
+              border: "none",
+              padding: "8px 12px",
+              borderRadius: 8,
+              fontSize: 14,
+              color: "#666",
+            }}
+          >
+            🛒 Pantry
+          </button>
+          <button
             onClick={signOut}
             style={{
               background: "none",
@@ -167,6 +181,7 @@ function AppContent() {
           <Route path="/edit/:id" element={<EditRecipe />} />
           <Route path="/create" element={<CreateRecipe />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/pantry" element={<Pantry />} />
         </Routes>
       </div>
     </BrowserRouter>
