@@ -22,6 +22,9 @@ export default function EditRecipe() {
           cookTime: String(data.cook_time),
           servings: String(data.servings),
           imageUrl: data.image_url || "",
+          mealType: data.meal_type || "",
+          cuisineType: data.cuisine_type || "",
+          cookDuration: data.cook_duration || "",
           ingredients: data.ingredients || [],
           steps: data.steps || [],
         });
@@ -42,6 +45,9 @@ export default function EditRecipe() {
       cook_time: parseInt(formData.cookTime) || 0,
       servings: parseInt(formData.servings) || 1,
       image_url: formData.imageUrl,
+      meal_type: formData.mealType,
+      cuisine_type: formData.cuisineType,
+      cook_duration: formData.cookDuration,
       ingredients: formData.ingredients.filter((i: any) => i.name),
       steps: formData.steps.filter((s: any) => s.instruction),
     });

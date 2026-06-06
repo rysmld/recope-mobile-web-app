@@ -19,6 +19,9 @@ export default function CreateRecipe() {
       cook_time: parseInt(formData.cookTime) || 0,
       servings: parseInt(formData.servings) || 1,
       image_url: formData.imageUrl,
+      meal_type: formData.mealType,
+      cuisine_type: formData.cuisineType,
+      cook_duration: formData.cookDuration,
       ingredients: formData.ingredients.filter((i: any) => i.name),
       steps: formData.steps.filter((s: any) => s.instruction),
     });

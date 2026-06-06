@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import recipeRoutes from './routes/recipes';
 import profileRoutes from './routes/profile';
 import pantryRoutes from './routes/pantry';
+import aiRoutes from './routes/ai';
+import chatRoutes from './routes/chat';
 
 dotenv.config();
 
@@ -20,6 +22,8 @@ app.get('/health', (_, res) => {
 app.use('/api/recipes', recipeRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/pantry', pantryRoutes);
+app.use('/api/ai', aiRoutes);
+app.use('/api/chat', chatRoutes);
 
 app.listen(PORT, () => {
   console.log(`Recope backend running on http://localhost:${PORT}`);

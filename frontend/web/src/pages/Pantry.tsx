@@ -8,13 +8,61 @@ interface PantryItem {
   unit: string;
 }
 
+const UNITS = [
+  "pcs",
+  "kg",
+  "g",
+  "L",
+  "ml",
+  "cup",
+  "tbsp",
+  "tsp",
+  "pack",
+  "bag",
+  "can",
+  "bottle",
+];
+
+const QUANTITIES = Array.from({ length: 20 }, (_, i) => String(i + 1));
+
+const selectStyle: React.CSSProperties = {
+  padding: "11px 14px",
+  borderRadius: 10,
+  border: "1px solid #eee",
+  fontSize: 15,
+  outline: "none",
+  backgroundColor: "#fafaf8",
+  cursor: "pointer",
+  appearance: "none",
+  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+  backgroundRepeat: "no-repeat",
+  backgroundPosition: "right 12px center",
+  paddingRight: 32,
+};
+
+const inputStyle: React.CSSProperties = {
+  padding: "11px 14px",
+  borderRadius: 10,
+  border: "1px solid #eee",
+  fontSize: 15,
+  outline: "none",
+  backgroundColor: "#fafaf8",
+};
+
 export default function Pantry() {
   const [items, setItems] = useState<PantryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [unit, setUnit] = useState("");
+  const [quantity, setQuantity] = useState("1");
+  const [unit, setUnit] = useState("pcs");
   const [adding, setAdding] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState<{
+    name: string;
+    quantity: string;
+    unit: string;
+  }>({ name: "", quantity: "1", unit: "pcs" });
+  const [savingId, setSavingId] = useState<string | null>(null);
 
   const fetchPantry = async () => {
     const data = await api.get("/api/pantry");
@@ -34,8 +82,8 @@ export default function Pantry() {
     if (!data.error) {
       setItems((prev) => [...prev, data]);
       setName("");
-      setQuantity("");
-      setUnit("");
+      setQuantity("1");
+      setUnit("pcs");
     }
     setAdding(false);
   };
@@ -45,13 +93,30 @@ export default function Pantry() {
     setItems((prev) => prev.filter((i) => i.id !== id));
   };
 
-  const inputStyle: React.CSSProperties = {
-    padding: "11px 14px",
-    borderRadius: 10,
-    border: "1px solid #eee",
-    fontSize: 15,
-    outline: "none",
-    backgroundColor: "#fafaf8",
+  const handleStartEdit = (item: PantryItem) => {
+    setEditingId(item.id);
+    setEditForm({
+      name: item.name,
+      quantity: item.quantity || "1",
+      unit: item.unit || "pcs",
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditForm({ name: "", quantity: "1", unit: "pcs" });
+  };
+
+  const handleSaveEdit = async (id: string) => {
+    setSavingId(id);
+    const data = await api.put(`/api/pantry/${id}`, editForm);
+    if (!data.error) {
+      setItems((prev) =>
+        prev.map((i) => (i.id === id ? { ...i, ...editForm } : i)),
+      );
+      setEditingId(null);
+    }
+    setSavingId(null);
   };
 
   return (
@@ -82,8 +147,9 @@ export default function Pantry() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 100px 100px auto",
+              gridTemplateColumns: "1fr 120px 140px auto",
               gap: 10,
+              alignItems: "center",
             }}
           >
             <input
@@ -93,18 +159,28 @@ export default function Pantry() {
               required
               style={inputStyle}
             />
-            <input
-              placeholder="Qty"
+            <select
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-              style={inputStyle}
-            />
-            <input
-              placeholder="Unit"
+              style={selectStyle}
+            >
+              {QUANTITIES.map((q) => (
+                <option key={q} value={q}>
+                  {q}
+                </option>
+              ))}
+            </select>
+            <select
               value={unit}
               onChange={(e) => setUnit(e.target.value)}
-              style={inputStyle}
-            />
+              style={selectStyle}
+            >
+              {UNITS.map((u) => (
+                <option key={u} value={u}>
+                  {u}
+                </option>
+              ))}
+            </select>
             <button
               type="submit"
               disabled={adding}
@@ -117,6 +193,7 @@ export default function Pantry() {
                 fontSize: 15,
                 fontWeight: 600,
                 whiteSpace: "nowrap",
+                cursor: "pointer",
               }}
             >
               {adding ? "..." : "+ Add"}
@@ -152,51 +229,170 @@ export default function Pantry() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {items.map((item) => (
-            <div
-              key={item.id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "12px 16px",
-                backgroundColor: "#fafaf8",
-                borderRadius: 10,
-                border: "1px solid #f0f0f0",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div key={item.id}>
+              {editingId === item.id ? (
+                // Edit mode
                 <div
                   style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: 4,
-                    backgroundColor: "#e67e22",
+                    padding: "14px 16px",
+                    backgroundColor: "#fdf3e7",
+                    borderRadius: 10,
+                    border: "1px solid #f0c080",
                   }}
-                />
-                <span style={{ fontSize: 15, fontWeight: 500 }}>
-                  {item.name}
-                </span>
-                {(item.quantity || item.unit) && (
-                  <span style={{ fontSize: 13, color: "#999" }}>
-                    {item.quantity} {item.unit}
-                  </span>
-                )}
-              </div>
-              <button
-                onClick={() => handleDelete(item.id)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  color: "#ddd",
-                  fontSize: 18,
-                  cursor: "pointer",
-                  padding: "0 4px",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#e53935")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "#ddd")}
-              >
-                ✕
-              </button>
+                >
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 120px 140px",
+                      gap: 10,
+                      marginBottom: 12,
+                    }}
+                  >
+                    <input
+                      value={editForm.name}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, name: e.target.value })
+                      }
+                      style={inputStyle}
+                      placeholder="Ingredient name"
+                    />
+                    <select
+                      value={editForm.quantity}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, quantity: e.target.value })
+                      }
+                      style={selectStyle}
+                    >
+                      {QUANTITIES.map((q) => (
+                        <option key={q} value={q}>
+                          {q}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={editForm.unit}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, unit: e.target.value })
+                      }
+                      style={selectStyle}
+                    >
+                      {UNITS.map((u) => (
+                        <option key={u} value={u}>
+                          {u}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 8,
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <button
+                      onClick={handleCancelEdit}
+                      style={{
+                        border: "1px solid #eee",
+                        background: "#fff",
+                        padding: "8px 16px",
+                        borderRadius: 8,
+                        fontSize: 13,
+                        cursor: "pointer",
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => handleSaveEdit(item.id)}
+                      disabled={savingId === item.id}
+                      style={{
+                        backgroundColor: "#e67e22",
+                        color: "#fff",
+                        border: "none",
+                        padding: "8px 16px",
+                        borderRadius: 8,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                      }}
+                    >
+                      {savingId === item.id ? "Saving..." : "Save"}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                // View mode
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "12px 16px",
+                    backgroundColor: "#fafaf8",
+                    borderRadius: 10,
+                    border: "1px solid #f0f0f0",
+                  }}
+                >
+                  <div
+                    style={{ display: "flex", alignItems: "center", gap: 12 }}
+                  >
+                    <div
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: 4,
+                        backgroundColor: "#e67e22",
+                      }}
+                    />
+                    <span style={{ fontSize: 15, fontWeight: 500 }}>
+                      {item.name}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: 13,
+                        color: "#fff",
+                        backgroundColor: "#e67e22",
+                        padding: "2px 10px",
+                        borderRadius: 20,
+                        fontWeight: 500,
+                      }}
+                    >
+                      {item.quantity} {item.unit}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button
+                      onClick={() => handleStartEdit(item)}
+                      style={{
+                        background: "none",
+                        border: "1px solid #eee",
+                        borderRadius: 8,
+                        padding: "6px 12px",
+                        fontSize: 13,
+                        color: "#666",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      style={{
+                        background: "none",
+                        border: "1px solid #ffcdd2",
+                        borderRadius: 8,
+                        padding: "6px 12px",
+                        fontSize: 13,
+                        color: "#e53935",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>

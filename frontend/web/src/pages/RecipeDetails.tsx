@@ -12,6 +12,16 @@ interface Recipe {
   servings: number;
   user_id: string;
   image_url: string;
+  meal_type: string;
+  cuisine_type: string;
+  cook_duration: string;
+  view_count: number;
+  profiles: {
+    username: string;
+    first_name: string;
+    last_name: string;
+    avatar_url: string;
+  };
 }
 
 interface Ingredient {
@@ -57,6 +67,13 @@ export default function RecipeDetail() {
     navigate("/");
   };
 
+  const getAuthorName = (profiles: Recipe["profiles"]) => {
+    if (!profiles) return "Unknown";
+    if (profiles.first_name)
+      return `${profiles.first_name} ${profiles.last_name || ""}`.trim();
+    return profiles.username || "Unknown";
+  };
+
   if (loading)
     return (
       <div style={{ display: "flex", justifyContent: "center", padding: 80 }}>
@@ -80,11 +97,13 @@ export default function RecipeDetail() {
           display: "flex",
           alignItems: "center",
           gap: 4,
+          cursor: "pointer",
         }}
       >
         ← Back to recipes
       </button>
 
+      {/* Hero image */}
       <div
         style={{
           width: "100%",
@@ -117,6 +136,7 @@ export default function RecipeDetail() {
         )}
       </div>
 
+      {/* Title + actions */}
       <div
         style={{
           display: "flex",
@@ -125,11 +145,19 @@ export default function RecipeDetail() {
           marginBottom: 12,
         }}
       >
-        <h2 style={{ fontSize: 32, fontWeight: 700, lineHeight: 1.2 }}>
+        <h2
+          style={{
+            fontSize: 32,
+            fontWeight: 700,
+            lineHeight: 1.2,
+            flex: 1,
+            marginRight: 16,
+          }}
+        >
           {recipe.title}
         </h2>
         {isOwner && (
-          <div style={{ display: "flex", gap: 8 }}>
+          <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
             <button
               onClick={() => navigate(`/edit/${recipe.id}`)}
               style={{
@@ -139,6 +167,7 @@ export default function RecipeDetail() {
                 borderRadius: 8,
                 fontSize: 14,
                 fontWeight: 500,
+                cursor: "pointer",
               }}
             >
               Edit
@@ -154,12 +183,116 @@ export default function RecipeDetail() {
                 borderRadius: 8,
                 fontSize: 14,
                 fontWeight: 500,
+                cursor: "pointer",
               }}
             >
               {deleting ? "Deleting..." : "Delete"}
             </button>
           </div>
         )}
+      </div>
+
+      {/* Author + categories */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: 16,
+          flexWrap: "wrap",
+          gap: 12,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div
+            style={{
+              width: 38,
+              height: 38,
+              borderRadius: 19,
+              backgroundColor: "#fdf3e7",
+              overflow: "hidden",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 15,
+              fontWeight: 700,
+              color: "#e67e22",
+              border: "2px solid #eee",
+              flexShrink: 0,
+            }}
+          >
+            {recipe.profiles?.avatar_url ? (
+              <img
+                src={recipe.profiles.avatar_url}
+                alt="avatar"
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            ) : (
+              getAuthorName(recipe.profiles).charAt(0).toUpperCase()
+            )}
+          </div>
+          <div>
+            <p
+              style={{
+                fontSize: 14,
+                fontWeight: 600,
+                margin: 0,
+                color: "#1a1a1a",
+              }}
+            >
+              {getAuthorName(recipe.profiles)}
+            </p>
+            <p style={{ fontSize: 12, color: "#999", margin: 0 }}>
+              Recipe author
+            </p>
+          </div>
+        </div>
+
+        {/* Category badges */}
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {recipe.meal_type && (
+            <span
+              style={{
+                fontSize: 12,
+                padding: "3px 10px",
+                borderRadius: 20,
+                backgroundColor: "#fdf3e7",
+                color: "#e67e22",
+                fontWeight: 600,
+              }}
+            >
+              {recipe.meal_type}
+            </span>
+          )}
+          {recipe.cuisine_type && (
+            <span
+              style={{
+                fontSize: 12,
+                padding: "3px 10px",
+                borderRadius: 20,
+                backgroundColor: "#f0f0f0",
+                color: "#666",
+                fontWeight: 600,
+              }}
+            >
+              {recipe.cuisine_type}
+            </span>
+          )}
+          {recipe.cook_duration && (
+            <span
+              style={{
+                fontSize: 12,
+                padding: "3px 10px",
+                borderRadius: 20,
+                backgroundColor: "#f0f7ff",
+                color: "#1976d2",
+                fontWeight: 600,
+              }}
+            >
+              {recipe.cook_duration}
+            </span>
+          )}
+        </div>
       </div>
 
       <p
@@ -173,11 +306,13 @@ export default function RecipeDetail() {
         {recipe.description}
       </p>
 
+      {/* Meta cards */}
       <div style={{ display: "flex", gap: 16, marginBottom: 36 }}>
         {[
           { label: "Prep time", value: `${recipe.prep_time} min` },
           { label: "Cook time", value: `${recipe.cook_time} min` },
           { label: "Servings", value: recipe.servings },
+          { label: "Views", value: recipe.view_count || 0 },
         ].map((item) => (
           <div
             key={item.label}
@@ -200,6 +335,7 @@ export default function RecipeDetail() {
         ))}
       </div>
 
+      {/* Ingredients */}
       <div
         style={{
           backgroundColor: "#fff",
@@ -240,6 +376,7 @@ export default function RecipeDetail() {
         ))}
       </div>
 
+      {/* Steps */}
       <div
         style={{
           backgroundColor: "#fff",

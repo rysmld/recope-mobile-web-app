@@ -18,6 +18,9 @@ interface RecipeFormData {
   cookTime: string;
   servings: string;
   imageUrl: string;
+  mealType: string;
+  cuisineType: string;
+  cookDuration: string;
   ingredients: Ingredient[];
   steps: Step[];
 }
@@ -29,6 +32,14 @@ interface Props {
   loading: boolean;
   error: string;
 }
+
+const MEAL_TYPES = ["Breakfast", "Lunch", "Dinner", "Snacks", "Desserts"];
+const CUISINE_TYPES = ["Beef", "Chicken", "Pork", "Seafood", "Vegetarian"];
+const COOK_DURATIONS = [
+  "Quick (under 30min)",
+  "Medium (30-60min)",
+  "Long (over 60min)",
+];
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
@@ -66,17 +77,24 @@ export default function RecipeForm({
 }: Props) {
   const [title, setTitle] = useState(initialData?.title || "");
   const [description, setDescription] = useState(
-    initialData?.description || ""
+    initialData?.description || "",
   );
   const [prepTime, setPrepTime] = useState(initialData?.prepTime || "");
   const [cookTime, setCookTime] = useState(initialData?.cookTime || "");
   const [servings, setServings] = useState(initialData?.servings || "");
   const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || "");
+  const [mealType, setMealType] = useState(initialData?.mealType || "");
+  const [cuisineType, setCuisineType] = useState(
+    initialData?.cuisineType || "",
+  );
+  const [cookDuration, setCookDuration] = useState(
+    initialData?.cookDuration || "",
+  );
   const [ingredients, setIngredients] = useState<Ingredient[]>(
-    initialData?.ingredients || [{ name: "", amount: "", unit: "" }]
+    initialData?.ingredients || [{ name: "", amount: "", unit: "" }],
   );
   const [steps, setSteps] = useState<Step[]>(
-    initialData?.steps || [{ instruction: "" }]
+    initialData?.steps || [{ instruction: "" }],
   );
 
   const addIngredient = () =>
@@ -86,7 +104,7 @@ export default function RecipeForm({
   const updateIngredient = (
     index: number,
     field: keyof Ingredient,
-    value: string
+    value: string,
   ) => {
     const updated = [...ingredients];
     updated[index] = { ...updated[index], [field]: value };
@@ -113,10 +131,24 @@ export default function RecipeForm({
       cookTime,
       servings,
       imageUrl,
+      mealType,
+      cuisineType,
+      cookDuration,
       ingredients,
       steps,
     });
   };
+
+  const chipStyle = (active: boolean): React.CSSProperties => ({
+    padding: "7px 14px",
+    borderRadius: 20,
+    border: `1px solid ${active ? "#e67e22" : "#eee"}`,
+    backgroundColor: active ? "#fdf3e7" : "#fff",
+    color: active ? "#e67e22" : "#666",
+    fontSize: 13,
+    fontWeight: active ? 600 : 400,
+    cursor: "pointer",
+  });
 
   return (
     <form onSubmit={handleSubmit}>
@@ -166,16 +198,19 @@ export default function RecipeForm({
         </div>
       </div>
 
-      {/* Time & Servings */}
+      {/* Details */}
       <div style={sectionStyle}>
         <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 20 }}>
           Details
         </h3>
+
+        {/* Time & Servings */}
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr 1fr",
             gap: 16,
+            marginBottom: 24,
           }}
         >
           <div>
@@ -207,6 +242,59 @@ export default function RecipeForm({
               onChange={(e) => setServings(e.target.value)}
               style={inputStyle}
             />
+          </div>
+        </div>
+
+        {/* Meal Type */}
+        <div style={{ marginBottom: 20 }}>
+          <label style={labelStyle}>Meal Type</label>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {MEAL_TYPES.map((type) => (
+              <button
+                key={type}
+                type="button"
+                onClick={() => setMealType(mealType === type ? "" : type)}
+                style={chipStyle(mealType === type)}
+              >
+                {type}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Cuisine Type */}
+        <div style={{ marginBottom: 20 }}>
+          <label style={labelStyle}>Cuisine Type</label>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {CUISINE_TYPES.map((type) => (
+              <button
+                key={type}
+                type="button"
+                onClick={() => setCuisineType(cuisineType === type ? "" : type)}
+                style={chipStyle(cuisineType === type)}
+              >
+                {type}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Cook Duration */}
+        <div>
+          <label style={labelStyle}>Cook Duration</label>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {COOK_DURATIONS.map((type) => (
+              <button
+                key={type}
+                type="button"
+                onClick={() =>
+                  setCookDuration(cookDuration === type ? "" : type)
+                }
+                style={chipStyle(cookDuration === type)}
+              >
+                {type}
+              </button>
+            ))}
           </div>
         </div>
       </div>

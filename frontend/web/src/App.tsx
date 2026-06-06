@@ -9,6 +9,7 @@ import CreateRecipe from "./pages/CreateRecipe";
 import EditRecipe from "./pages/EditRecipe";
 import Profile from "./pages/Profile";
 import Pantry from "./pages/Pantry";
+import RecipeChat from "./pages/RecipeChat";
 
 function Navbar() {
   const { user, signOut } = useAuth();
@@ -184,6 +185,7 @@ function AppContent() {
           <Route path="/pantry" element={<Pantry />} />
         </Routes>
       </div>
+      <RecipeChat />
     </BrowserRouter>
   );
 }

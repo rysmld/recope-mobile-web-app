@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 import AvatarUpload from "../pages/AvatarUpload";
+import { supabase } from "../lib/supabase";
 
 interface Recipe {
   id: string;
@@ -38,6 +39,8 @@ export default function Profile() {
     last_name: "",
     avatar_url: "",
   });
+  const [newEmail, setNewEmail] = useState("");
+  const [emailMessage, setEmailMessage] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,6 +66,24 @@ export default function Profile() {
       setEditing(false);
     }
     setSaving(false);
+  };
+
+  const handleUpdateEmail = async () => {
+    if (!newEmail) return;
+
+    const confirmed = window.confirm(
+      `Are you sure you want to change your email to "${newEmail}"?\n\nYou will be logged out and a confirmation email will be sent to your new address. Click the link in the email to confirm the change.`,
+    );
+
+    if (!confirmed) return;
+
+    const { error } = await supabase.auth.updateUser({ email: newEmail });
+    if (error) {
+      setEmailMessage(error.message);
+    } else {
+      // Sign out manually so user knows they need to confirm
+      await supabase.auth.signOut();
+    }
   };
 
   const displayName = profile.first_name
@@ -174,6 +195,7 @@ export default function Profile() {
               onUpload={(url) => setForm({ ...form, avatar_url: url })}
             />
 
+            {/* Name fields */}
             <div
               style={{
                 display: "grid",
@@ -242,6 +264,77 @@ export default function Profile() {
               </div>
             </div>
 
+            {/* Email update */}
+            <div style={{ marginBottom: 20 }}>
+              <label
+                style={{
+                  display: "block",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "#444",
+                  marginBottom: 6,
+                }}
+              >
+                Update Email
+              </label>
+              <p style={{ fontSize: 13, color: "#999", marginBottom: 8 }}>
+                Current: {user?.email}
+              </p>
+              <div style={{ display: "flex", gap: 8 }}>
+                <input
+                  type="email"
+                  placeholder="New email address"
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  style={{
+                    flex: 1,
+                    padding: "11px 14px",
+                    borderRadius: 10,
+                    border: "1px solid #eee",
+                    fontSize: 15,
+                    outline: "none",
+                    backgroundColor: "#fafaf8",
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={handleUpdateEmail}
+                  style={{
+                    backgroundColor: "#e67e22",
+                    color: "#fff",
+                    border: "none",
+                    padding: "11px 20px",
+                    borderRadius: 10,
+                    fontSize: 14,
+                    fontWeight: 600,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  Update
+                </button>
+              </div>
+              {emailMessage && (
+                <p
+                  style={{
+                    fontSize: 13,
+                    marginTop: 8,
+                    color: emailMessage.includes("sent")
+                      ? "#2e7d32"
+                      : "#e53935",
+                    backgroundColor: emailMessage.includes("sent")
+                      ? "#f1f8e9"
+                      : "#fff5f5",
+                    padding: "8px 12px",
+                    borderRadius: 8,
+                    border: `1px solid ${emailMessage.includes("sent") ? "#c5e1a5" : "#ffcdd2"}`,
+                  }}
+                >
+                  {emailMessage}
+                </p>
+              )}
+            </div>
+
+            {/* Action buttons */}
             <div
               style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}
             >
@@ -249,6 +342,8 @@ export default function Profile() {
                 onClick={() => {
                   setEditing(false);
                   setForm(profile);
+                  setEmailMessage("");
+                  setNewEmail("");
                 }}
                 style={{
                   border: "1px solid #eee",

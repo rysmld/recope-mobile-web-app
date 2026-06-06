@@ -39,6 +39,22 @@ export const deletePantryItem = async (req: AuthRequest, res: Response) => {
   res.json({ message: 'Item deleted' });
 };
 
+export const updatePantryItem = async (req: AuthRequest, res: Response) => {
+  const { id } = req.params;
+  const { name, quantity, unit } = req.body;
+
+  const { data, error } = await supabase
+    .from('pantry_items')
+    .update({ name, quantity, unit })
+    .eq('id', id)
+    .eq('user_id', req.user!.id)
+    .select()
+    .single();
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+};
+
 export const matchRecipes = async (req: AuthRequest, res: Response) => {
   const { data: pantryItems, error: pantryError } = await supabase
     .from('pantry_items')
