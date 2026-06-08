@@ -22,7 +22,11 @@ export default function EditRecipe() {
           cookTime: String(data.cook_time),
           servings: String(data.servings),
           imageUrl: data.image_url || "",
-          mealType: data.meal_type || "",
+          mealType: Array.isArray(data.meal_type)
+            ? data.meal_type
+            : data.meal_type
+              ? [data.meal_type]
+              : [],
           cuisineType: data.cuisine_type || "",
           cookDuration: data.cook_duration || "",
           ingredients: data.ingredients || [],
@@ -78,6 +82,7 @@ export default function EditRecipe() {
           color: "#999",
           fontSize: 14,
           marginBottom: 24,
+          cursor: "pointer",
         }}
       >
         ← Back

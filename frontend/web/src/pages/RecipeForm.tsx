@@ -18,7 +18,7 @@ interface RecipeFormData {
   cookTime: string;
   servings: string;
   imageUrl: string;
-  mealType: string;
+  mealType: string[];
   cuisineType: string;
   cookDuration: string;
   ingredients: Ingredient[];
@@ -83,7 +83,9 @@ export default function RecipeForm({
   const [cookTime, setCookTime] = useState(initialData?.cookTime || "");
   const [servings, setServings] = useState(initialData?.servings || "");
   const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || "");
-  const [mealType, setMealType] = useState(initialData?.mealType || "");
+  const [mealType, setMealType] = useState<string[]>(
+    initialData?.mealType || [],
+  );
   const [cuisineType, setCuisineType] = useState(
     initialData?.cuisineType || "",
   );
@@ -96,6 +98,12 @@ export default function RecipeForm({
   const [steps, setSteps] = useState<Step[]>(
     initialData?.steps || [{ instruction: "" }],
   );
+
+  const toggleMealType = (type: string) => {
+    setMealType((prev) =>
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type],
+    );
+  };
 
   const addIngredient = () =>
     setIngredients([...ingredients, { name: "", amount: "", unit: "" }]);
@@ -173,9 +181,7 @@ export default function RecipeForm({
         <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 20 }}>
           Basic Info
         </h3>
-
         <ImageUpload currentImage={imageUrl} onUpload={setImageUrl} />
-
         <div style={{ marginBottom: 16 }}>
           <label style={labelStyle}>Recipe Title *</label>
           <input
@@ -186,7 +192,6 @@ export default function RecipeForm({
             style={inputStyle}
           />
         </div>
-
         <div>
           <label style={labelStyle}>Description</label>
           <textarea
@@ -204,7 +209,6 @@ export default function RecipeForm({
           Details
         </h3>
 
-        {/* Time & Servings */}
         <div
           style={{
             display: "grid",
@@ -245,24 +249,37 @@ export default function RecipeForm({
           </div>
         </div>
 
-        {/* Meal Type */}
+        {/* Meal Type - multi select */}
         <div style={{ marginBottom: 20 }}>
-          <label style={labelStyle}>Meal Type</label>
+          <label style={labelStyle}>
+            Meal Type
+            <span
+              style={{
+                fontSize: 12,
+                color: "#999",
+                fontWeight: 400,
+                marginLeft: 8,
+              }}
+            >
+              (select all that apply)
+            </span>
+          </label>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             {MEAL_TYPES.map((type) => (
               <button
                 key={type}
                 type="button"
-                onClick={() => setMealType(mealType === type ? "" : type)}
-                style={chipStyle(mealType === type)}
+                onClick={() => toggleMealType(type)}
+                style={chipStyle(mealType.includes(type))}
               >
+                {mealType.includes(type) ? "✓ " : ""}
                 {type}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Cuisine Type */}
+        {/* Cuisine Type - single select */}
         <div style={{ marginBottom: 20 }}>
           <label style={labelStyle}>Cuisine Type</label>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -279,7 +296,7 @@ export default function RecipeForm({
           </div>
         </div>
 
-        {/* Cook Duration */}
+        {/* Cook Duration - single select */}
         <div>
           <label style={labelStyle}>Cook Duration</label>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -360,6 +377,7 @@ export default function RecipeForm({
             fontSize: 14,
             width: "100%",
             marginTop: 4,
+            cursor: "pointer",
           }}
         >
           + Add Ingredient
@@ -416,6 +434,7 @@ export default function RecipeForm({
                 fontSize: 16,
                 padding: "6px 10px",
                 marginTop: 4,
+                cursor: "pointer",
               }}
             >
               ✕
@@ -434,6 +453,7 @@ export default function RecipeForm({
             fontSize: 14,
             width: "100%",
             marginTop: 4,
+            cursor: "pointer",
           }}
         >
           + Add Step
@@ -453,6 +473,7 @@ export default function RecipeForm({
           fontSize: 16,
           fontWeight: 600,
           marginBottom: 40,
+          cursor: "pointer",
         }}
       >
         {loading ? "Saving..." : submitLabel}

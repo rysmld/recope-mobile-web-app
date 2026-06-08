@@ -11,7 +11,7 @@ interface Recipe {
   cook_time: number;
   servings: number;
   image_url: string;
-  meal_type: string;
+  meal_type: string[];
   cuisine_type: string;
   cook_duration: string;
   view_count: number;
@@ -93,7 +93,8 @@ export default function Home() {
     const matchesSearch =
       r.title.toLowerCase().includes(search.toLowerCase()) ||
       r.description?.toLowerCase().includes(search.toLowerCase());
-    const matchesMeal = mealFilter === "All" || r.meal_type === mealFilter;
+    const matchesMeal =
+      mealFilter === "All" || r.meal_type?.includes(mealFilter);
     const matchesCuisine =
       cuisineFilter === "All" || r.cuisine_type === cuisineFilter;
     const matchesDuration =
@@ -186,8 +187,9 @@ export default function Home() {
             flexWrap: "wrap",
           }}
         >
-          {recipe.meal_type && (
+          {recipe.meal_type?.map((type: string) => (
             <span
+              key={type}
               style={{
                 fontSize: 11,
                 padding: "2px 8px",
@@ -197,9 +199,9 @@ export default function Home() {
                 fontWeight: 600,
               }}
             >
-              {recipe.meal_type}
+              {type}
             </span>
-          )}
+          ))}
           {recipe.cuisine_type && (
             <span
               style={{

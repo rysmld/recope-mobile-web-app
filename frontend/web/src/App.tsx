@@ -10,9 +10,10 @@ import EditRecipe from "./pages/EditRecipe";
 import Profile from "./pages/Profile";
 import Pantry from "./pages/Pantry";
 import RecipeChat from "./pages/RecipeChat";
+import Admin from "./pages/Admin";
 
 function Navbar() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<any>(null);
 
@@ -71,10 +72,44 @@ function Navbar() {
               borderRadius: 8,
               fontSize: 14,
               color: "#666",
+              cursor: "pointer",
             }}
           >
             Home
           </button>
+
+          <button
+            onClick={() => navigate("/pantry")}
+            style={{
+              background: "none",
+              border: "none",
+              padding: "8px 12px",
+              borderRadius: 8,
+              fontSize: 14,
+              color: "#666",
+              cursor: "pointer",
+            }}
+          >
+            🛒 Pantry
+          </button>
+
+          {isAdmin && (
+            <button
+              onClick={() => navigate("/admin")}
+              style={{
+                background: "none",
+                border: "1px solid #eee",
+                padding: "8px 12px",
+                borderRadius: 8,
+                fontSize: 14,
+                color: "#666",
+                cursor: "pointer",
+              }}
+            >
+              📊 Admin
+            </button>
+          )}
+
           <button
             onClick={() => navigate("/profile")}
             style={{
@@ -87,6 +122,7 @@ function Navbar() {
               borderRadius: 20,
               fontSize: 14,
               color: "#444",
+              cursor: "pointer",
             }}
           >
             {profile?.avatar_url ? (
@@ -120,6 +156,7 @@ function Navbar() {
             )}
             {displayName}
           </button>
+
           <button
             onClick={() => navigate("/create")}
             style={{
@@ -130,23 +167,12 @@ function Navbar() {
               borderRadius: 8,
               fontSize: 14,
               fontWeight: 600,
+              cursor: "pointer",
             }}
           >
             + Create
           </button>
-          <button
-            onClick={() => navigate("/pantry")}
-            style={{
-              background: "none",
-              border: "none",
-              padding: "8px 12px",
-              borderRadius: 8,
-              fontSize: 14,
-              color: "#666",
-            }}
-          >
-            🛒 Pantry
-          </button>
+
           <button
             onClick={signOut}
             style={{
@@ -156,6 +182,7 @@ function Navbar() {
               borderRadius: 8,
               fontSize: 14,
               color: "#999",
+              cursor: "pointer",
             }}
           >
             Sign out
@@ -183,6 +210,7 @@ function AppContent() {
           <Route path="/create" element={<CreateRecipe />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/pantry" element={<Pantry />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </div>
       <RecipeChat />

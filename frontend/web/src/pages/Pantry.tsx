@@ -23,8 +23,6 @@ const UNITS = [
   "bottle",
 ];
 
-const QUANTITIES = Array.from({ length: 20 }, (_, i) => String(i + 1));
-
 const selectStyle: React.CSSProperties = {
   padding: "11px 14px",
   borderRadius: 10,
@@ -53,7 +51,7 @@ export default function Pantry() {
   const [items, setItems] = useState<PantryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
-  const [quantity, setQuantity] = useState("1");
+  const [quantity, setQuantity] = useState("");
   const [unit, setUnit] = useState("pcs");
   const [adding, setAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -61,7 +59,7 @@ export default function Pantry() {
     name: string;
     quantity: string;
     unit: string;
-  }>({ name: "", quantity: "1", unit: "pcs" });
+  }>({ name: "", quantity: "", unit: "pcs" });
   const [savingId, setSavingId] = useState<string | null>(null);
 
   const fetchPantry = async () => {
@@ -82,7 +80,7 @@ export default function Pantry() {
     if (!data.error) {
       setItems((prev) => [...prev, data]);
       setName("");
-      setQuantity("1");
+      setQuantity("");
       setUnit("pcs");
     }
     setAdding(false);
@@ -97,14 +95,14 @@ export default function Pantry() {
     setEditingId(item.id);
     setEditForm({
       name: item.name,
-      quantity: item.quantity || "1",
+      quantity: item.quantity || "",
       unit: item.unit || "pcs",
     });
   };
 
   const handleCancelEdit = () => {
     setEditingId(null);
-    setEditForm({ name: "", quantity: "1", unit: "pcs" });
+    setEditForm({ name: "", quantity: "", unit: "pcs" });
   };
 
   const handleSaveEdit = async (id: string) => {
@@ -147,7 +145,7 @@ export default function Pantry() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 120px 140px auto",
+              gridTemplateColumns: "1fr 100px 140px auto",
               gap: 10,
               alignItems: "center",
             }}
@@ -159,17 +157,12 @@ export default function Pantry() {
               required
               style={inputStyle}
             />
-            <select
+            <input
+              placeholder="Qty"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-              style={selectStyle}
-            >
-              {QUANTITIES.map((q) => (
-                <option key={q} value={q}>
-                  {q}
-                </option>
-              ))}
-            </select>
+              style={inputStyle}
+            />
             <select
               value={unit}
               onChange={(e) => setUnit(e.target.value)}
@@ -243,7 +236,7 @@ export default function Pantry() {
                   <div
                     style={{
                       display: "grid",
-                      gridTemplateColumns: "1fr 120px 140px",
+                      gridTemplateColumns: "1fr 100px 140px",
                       gap: 10,
                       marginBottom: 12,
                     }}
@@ -256,19 +249,14 @@ export default function Pantry() {
                       style={inputStyle}
                       placeholder="Ingredient name"
                     />
-                    <select
+                    <input
                       value={editForm.quantity}
                       onChange={(e) =>
                         setEditForm({ ...editForm, quantity: e.target.value })
                       }
-                      style={selectStyle}
-                    >
-                      {QUANTITIES.map((q) => (
-                        <option key={q} value={q}>
-                          {q}
-                        </option>
-                      ))}
-                    </select>
+                      style={inputStyle}
+                      placeholder="Qty"
+                    />
                     <select
                       value={editForm.unit}
                       onChange={(e) =>
@@ -348,18 +336,20 @@ export default function Pantry() {
                     <span style={{ fontSize: 15, fontWeight: 500 }}>
                       {item.name}
                     </span>
-                    <span
-                      style={{
-                        fontSize: 13,
-                        color: "#fff",
-                        backgroundColor: "#e67e22",
-                        padding: "2px 10px",
-                        borderRadius: 20,
-                        fontWeight: 500,
-                      }}
-                    >
-                      {item.quantity} {item.unit}
-                    </span>
+                    {(item.quantity || item.unit) && (
+                      <span
+                        style={{
+                          fontSize: 13,
+                          color: "#fff",
+                          backgroundColor: "#e67e22",
+                          padding: "2px 10px",
+                          borderRadius: 20,
+                          fontWeight: 500,
+                        }}
+                      >
+                        {item.quantity} {item.unit}
+                      </span>
+                    )}
                   </div>
                   <div style={{ display: "flex", gap: 8 }}>
                     <button

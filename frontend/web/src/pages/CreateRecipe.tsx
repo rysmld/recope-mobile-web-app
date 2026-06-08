@@ -45,6 +45,7 @@ export default function CreateRecipe() {
           color: "#999",
           fontSize: 14,
           marginBottom: 24,
+          cursor: "pointer",
         }}
       >
         ← Back

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import { useAuth } from "../context/AuthContext";
@@ -12,7 +12,7 @@ interface Recipe {
   servings: number;
   user_id: string;
   image_url: string;
-  meal_type: string;
+  meal_type: string[];
   cuisine_type: string;
   cook_duration: string;
   view_count: number;
@@ -46,9 +46,13 @@ export default function RecipeDetail() {
   const [steps, setSteps] = useState<Step[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+  const hasTrackedView = useRef(false);
 
   useEffect(() => {
     const fetchRecipe = async () => {
+      if (hasTrackedView.current) return;
+      hasTrackedView.current = true;
+
       const data = await api.get(`/api/recipes/${id}`);
       if (data.id) {
         setRecipe(data);
@@ -250,8 +254,9 @@ export default function RecipeDetail() {
 
         {/* Category badges */}
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-          {recipe.meal_type && (
+          {recipe.meal_type?.map((type: string) => (
             <span
+              key={type}
               style={{
                 fontSize: 12,
                 padding: "3px 10px",
@@ -261,9 +266,9 @@ export default function RecipeDetail() {
                 fontWeight: 600,
               }}
             >
-              {recipe.meal_type}
+              {type}
             </span>
-          )}
+          ))}
           {recipe.cuisine_type && (
             <span
               style={{
