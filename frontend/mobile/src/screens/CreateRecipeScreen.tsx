@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import api from "../lib/api";
-import { colors } from "../themes";
+import { colors } from "../theme";
 import ImageUpload from "../components/ImageUpload";
 
 interface Ingredient {
@@ -24,6 +24,14 @@ interface Ingredient {
 interface Step {
   instruction: string;
 }
+
+const MEAL_TYPES = ["Breakfast", "Lunch", "Dinner", "Snacks", "Desserts"];
+const CUISINE_TYPES = ["Beef", "Chicken", "Pork", "Seafood", "Vegetarian"];
+const COOK_DURATIONS = [
+  "Quick (under 30min)",
+  "Medium (30-60min)",
+  "Long (over 60min)",
+];
 
 export default function CreateRecipeScreen() {
   const navigation = useNavigation<any>();
@@ -39,6 +47,9 @@ export default function CreateRecipeScreen() {
   const [cookTime, setCookTime] = useState("");
   const [servings, setServings] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [mealType, setMealType] = useState<string[]>([]);
+  const [cuisineType, setCuisineType] = useState("");
+  const [cookDuration, setCookDuration] = useState("");
   const [ingredients, setIngredients] = useState<Ingredient[]>([
     { name: "", amount: "", unit: "" },
   ]);
@@ -55,10 +66,19 @@ export default function CreateRecipeScreen() {
         setCookTime(String(data.cook_time));
         setServings(String(data.servings));
         setImageUrl(data.image_url || "");
+        setMealType(
+          Array.isArray(data.meal_type)
+            ? data.meal_type
+            : data.meal_type
+              ? [data.meal_type]
+              : [],
+        );
+        setCuisineType(data.cuisine_type || "");
+        setCookDuration(data.cook_duration || "");
         setIngredients(
           data.ingredients?.length
             ? data.ingredients
-            : [{ name: "", amount: "", unit: "" }]
+            : [{ name: "", amount: "", unit: "" }],
         );
         setSteps(data.steps?.length ? data.steps : [{ instruction: "" }]);
       }
@@ -67,6 +87,12 @@ export default function CreateRecipeScreen() {
     fetchRecipe();
   }, [editId]);
 
+  const toggleMealType = (type: string) => {
+    setMealType((prev) =>
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type],
+    );
+  };
+
   const addIngredient = () =>
     setIngredients([...ingredients, { name: "", amount: "", unit: "" }]);
   const addStep = () => setSteps([...steps, { instruction: "" }]);
@@ -74,7 +100,7 @@ export default function CreateRecipeScreen() {
   const updateIngredient = (
     i: number,
     field: keyof Ingredient,
-    value: string
+    value: string,
   ) => {
     const updated = [...ingredients];
     updated[i] = { ...updated[i], [field]: value };
@@ -103,6 +129,9 @@ export default function CreateRecipeScreen() {
       cook_time: parseInt(cookTime) || 0,
       servings: parseInt(servings) || 1,
       image_url: imageUrl,
+      meal_type: mealType,
+      cuisine_type: cuisineType,
+      cook_duration: cookDuration,
       ingredients: ingredients.filter((i) => i.name),
       steps: steps.filter((s) => s.instruction),
     };
@@ -128,6 +157,23 @@ export default function CreateRecipeScreen() {
         color={colors.primary}
       />
     );
+
+  const chipStyle = (active: boolean) => ({
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: active ? colors.primary : colors.border,
+    backgroundColor: active ? colors.primaryLight : colors.white,
+    marginRight: 8,
+    marginBottom: 8,
+  });
+
+  const chipTextStyle = (active: boolean) => ({
+    fontSize: 13,
+    color: active ? colors.primary : colors.textSecondary,
+    fontWeight: active ? ("600" as const) : ("400" as const),
+  });
 
   return (
     <KeyboardAvoidingView
@@ -199,6 +245,64 @@ export default function CreateRecipeScreen() {
               />
             </View>
           </View>
+
+          {/* Meal Type - multi select */}
+          <Text style={styles.label}>
+            Meal Type{" "}
+            <Text
+              style={{
+                fontSize: 11,
+                color: colors.textMuted,
+                fontWeight: "400",
+              }}
+            >
+              (select all that apply)
+            </Text>
+          </Text>
+          <View style={styles.chips}>
+            {MEAL_TYPES.map((type) => (
+              <TouchableOpacity
+                key={type}
+                onPress={() => toggleMealType(type)}
+                style={chipStyle(mealType.includes(type))}
+              >
+                <Text style={chipTextStyle(mealType.includes(type))}>
+                  {mealType.includes(type) ? "✓ " : ""}
+                  {type}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* Cuisine Type - single select */}
+          <Text style={styles.label}>Cuisine Type</Text>
+          <View style={styles.chips}>
+            {CUISINE_TYPES.map((type) => (
+              <TouchableOpacity
+                key={type}
+                onPress={() => setCuisineType(cuisineType === type ? "" : type)}
+                style={chipStyle(cuisineType === type)}
+              >
+                <Text style={chipTextStyle(cuisineType === type)}>{type}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* Cook Duration - single select */}
+          <Text style={styles.label}>Cook Duration</Text>
+          <View style={styles.chips}>
+            {COOK_DURATIONS.map((type) => (
+              <TouchableOpacity
+                key={type}
+                onPress={() =>
+                  setCookDuration(cookDuration === type ? "" : type)
+                }
+                style={chipStyle(cookDuration === type)}
+              >
+                <Text style={chipTextStyle(cookDuration === type)}>{type}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
 
         {/* Ingredients */}
@@ -269,7 +373,6 @@ export default function CreateRecipeScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Submit */}
         <TouchableOpacity
           style={styles.submitBtn}
           onPress={handleSubmit}
@@ -310,6 +413,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: colors.textSecondary,
     marginBottom: 6,
+    marginTop: 8,
   },
   input: {
     borderWidth: 1,
@@ -323,6 +427,7 @@ const styles = StyleSheet.create({
   },
   textarea: { height: 80, textAlignVertical: "top" },
   row: { flexDirection: "row", gap: 10 },
+  chips: { flexDirection: "row", flexWrap: "wrap", marginBottom: 8 },
   ingredientRow: { flexDirection: "row", gap: 8, alignItems: "flex-start" },
   stepRow: { flexDirection: "row", gap: 10, alignItems: "flex-start" },
   stepNumber: {

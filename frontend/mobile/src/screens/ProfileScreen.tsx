@@ -15,7 +15,7 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import api from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
-import { colors } from "../themes";
+import { colors } from "../theme";
 
 interface Recipe {
   id: string;
@@ -51,6 +51,8 @@ export default function ProfileScreen() {
     last_name: "",
     avatar_url: "",
   });
+  const [newEmail, setNewEmail] = useState("");
+  const [emailMessage, setEmailMessage] = useState("");
 
   const fetchData = async () => {
     const [recipesData, profileData] = await Promise.all([
@@ -68,8 +70,19 @@ export default function ProfileScreen() {
   useFocusEffect(
     useCallback(() => {
       fetchData();
-    }, [])
+    }, []),
   );
+
+  const handleUpdateEmail = async () => {
+    if (!newEmail) return;
+    const { error } = await supabase.auth.updateUser({ email: newEmail });
+    if (error) {
+      setEmailMessage(error.message);
+    } else {
+      setEmailMessage("Confirmation sent to " + newEmail);
+      setNewEmail("");
+    }
+  };
 
   const handlePickAvatar = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -110,6 +123,7 @@ export default function ProfileScreen() {
     if (!data.error) {
       setProfile(form);
       setEditing(false);
+      setEmailMessage("");
     }
     setSaving(false);
   };
@@ -205,12 +219,14 @@ export default function ProfileScreen() {
                     </Text>
                   </TouchableOpacity>
 
+                  {/* Name fields */}
                   <View style={styles.formRow}>
                     <View style={{ flex: 1 }}>
                       <Text style={styles.label}>First Name</Text>
                       <TextInput
                         style={styles.input}
                         placeholder="First name"
+                        placeholderTextColor={colors.textMuted}
                         value={form.first_name}
                         onChangeText={(v) =>
                           setForm((f) => ({ ...f, first_name: v }))
@@ -222,6 +238,7 @@ export default function ProfileScreen() {
                       <TextInput
                         style={styles.input}
                         placeholder="Last name"
+                        placeholderTextColor={colors.textMuted}
                         value={form.last_name}
                         onChangeText={(v) =>
                           setForm((f) => ({ ...f, last_name: v }))
@@ -230,12 +247,63 @@ export default function ProfileScreen() {
                     </View>
                   </View>
 
+                  {/* Email update */}
+                  <View style={{ marginBottom: 16 }}>
+                    <Text style={styles.label}>Update Email</Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: colors.textMuted,
+                        marginBottom: 6,
+                      }}
+                    >
+                      Current: {user?.email}
+                    </Text>
+                    <View style={{ flexDirection: "row", gap: 8 }}>
+                      <TextInput
+                        style={[styles.input, { flex: 1 }]}
+                        placeholder="New email address"
+                        placeholderTextColor={colors.textMuted}
+                        value={newEmail}
+                        onChangeText={setNewEmail}
+                        autoCapitalize="none"
+                        keyboardType="email-address"
+                      />
+                      <TouchableOpacity
+                        style={styles.emailUpdateBtn}
+                        onPress={handleUpdateEmail}
+                      >
+                        <Text style={styles.emailUpdateBtnText}>Update</Text>
+                      </TouchableOpacity>
+                    </View>
+                    {emailMessage ? (
+                      <Text
+                        style={[
+                          styles.emailMessage,
+                          {
+                            color: emailMessage.includes("sent")
+                              ? "#2e7d32"
+                              : colors.danger,
+                            backgroundColor: emailMessage.includes("sent")
+                              ? "#f1f8e9"
+                              : colors.dangerLight,
+                          },
+                        ]}
+                      >
+                        {emailMessage}
+                      </Text>
+                    ) : null}
+                  </View>
+
+                  {/* Action buttons */}
                   <View style={styles.editActions}>
                     <TouchableOpacity
                       style={styles.cancelBtn}
                       onPress={() => {
                         setEditing(false);
                         setForm(profile);
+                        setEmailMessage("");
+                        setNewEmail("");
                       }}
                     >
                       <Text style={styles.cancelBtnText}>Cancel</Text>
@@ -409,7 +477,16 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     color: colors.textPrimary,
   },
-  editActions: { flexDirection: "row", gap: 8 },
+  emailUpdateBtn: {
+    backgroundColor: colors.primary,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emailUpdateBtnText: { color: colors.white, fontWeight: "600", fontSize: 13 },
+  emailMessage: { fontSize: 12, marginTop: 6, padding: 8, borderRadius: 8 },
+  editActions: { flexDirection: "row", gap: 8, marginTop: 8 },
   cancelBtn: {
     flex: 1,
     borderWidth: 1,

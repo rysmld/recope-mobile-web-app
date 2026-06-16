@@ -1,6 +1,6 @@
 import { supabase } from './supabase';
 
-const BASE_URL = 'http://192.168.1.14:4000';
+const BASE_URL = 'http://localhost:4000';
 
 const getToken = async () => {
   const { data: { session } } = await supabase.auth.getSession();

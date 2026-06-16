@@ -48,7 +48,7 @@ const inputStyle: React.CSSProperties = {
   border: "1px solid #eee",
   fontSize: 15,
   outline: "none",
-  backgroundColor: "#fafaf8",
+  backgroundColor: "#f4faf7",
   marginBottom: 0,
 };
 
@@ -150,9 +150,9 @@ export default function RecipeForm({
   const chipStyle = (active: boolean): React.CSSProperties => ({
     padding: "7px 14px",
     borderRadius: 20,
-    border: `1px solid ${active ? "#e67e22" : "#eee"}`,
-    backgroundColor: active ? "#fdf3e7" : "#fff",
-    color: active ? "#e67e22" : "#666",
+    border: `1px solid ${active ? "#2d6a4f" : "#eee"}`,
+    backgroundColor: active ? "#eaf4ef" : "#fff",
+    color: active ? "#2d6a4f" : "#666",
     fontSize: 13,
     fontWeight: active ? 600 : 400,
     cursor: "pointer",
@@ -404,7 +404,7 @@ export default function RecipeForm({
                 width: 32,
                 height: 32,
                 borderRadius: 16,
-                backgroundColor: "#e67e22",
+                backgroundColor: "#2d6a4f",
                 color: "#fff",
                 display: "flex",
                 alignItems: "center",
@@ -466,7 +466,7 @@ export default function RecipeForm({
         style={{
           width: "100%",
           padding: "14px",
-          backgroundColor: loading ? "#f0a060" : "#e67e22",
+          backgroundColor: loading ? "#95c9b0" : "#2d6a4f",
           color: "#fff",
           border: "none",
           borderRadius: 10,

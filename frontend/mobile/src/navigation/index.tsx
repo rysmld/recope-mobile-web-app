@@ -10,6 +10,8 @@ import HomeScreen from "../screens/HomeScreen";
 import RecipeDetailScreen from "../screens/RecipeDetailsScreen";
 import CreateRecipeScreen from "../screens/CreateRecipeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import PantryScreen from "../screens/PantryScreen";
+import RecipeChat from "../screens/RecipeChat";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -33,10 +35,20 @@ function HomeTabs() {
         name="Home"
         component={HomeScreen}
         options={{
-          title: "Recope",
+          title: "ReCope",
           tabBarLabel: "Home",
           tabBarIcon: ({ color }) => (
             <Text style={{ fontSize: 20, color }}>🏠</Text>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Pantry"
+        component={PantryScreen}
+        options={{
+          title: "My Pantry",
+          tabBarIcon: ({ color }) => (
+            <Text style={{ fontSize: 20, color }}>🛒</Text>
           ),
         }}
       />
@@ -66,42 +78,45 @@ export default function Navigation() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!user ? (
-          <Stack.Screen name="Login" component={LoginScreen} />
-        ) : (
-          <>
-            <Stack.Screen name="Main" component={HomeTabs} />
-            <Stack.Screen
-              name="RecipeDetail"
-              component={RecipeDetailScreen}
-              options={{
-                headerShown: true,
-                title: "Recipe",
-                headerTintColor: colors.primary,
-              }}
-            />
-            <Stack.Screen
-              name="CreateRecipe"
-              component={CreateRecipeScreen}
-              options={{
-                headerShown: true,
-                title: "Create Recipe",
-                headerTintColor: colors.primary,
-              }}
-            />
-            <Stack.Screen
-              name="EditRecipe"
-              component={CreateRecipeScreen}
-              options={{
-                headerShown: true,
-                title: "Edit Recipe",
-                headerTintColor: colors.primary,
-              }}
-            />
-          </>
-        )}
-      </Stack.Navigator>
+      <View style={{ flex: 1 }}>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          {!user ? (
+            <Stack.Screen name="Login" component={LoginScreen} />
+          ) : (
+            <>
+              <Stack.Screen name="Main" component={HomeTabs} />
+              <Stack.Screen
+                name="RecipeDetail"
+                component={RecipeDetailScreen}
+                options={{
+                  headerShown: true,
+                  title: "Recipe",
+                  headerTintColor: colors.primary,
+                }}
+              />
+              <Stack.Screen
+                name="CreateRecipe"
+                component={CreateRecipeScreen}
+                options={{
+                  headerShown: true,
+                  title: "Create Recipe",
+                  headerTintColor: colors.primary,
+                }}
+              />
+              <Stack.Screen
+                name="EditRecipe"
+                component={CreateRecipeScreen}
+                options={{
+                  headerShown: true,
+                  title: "Edit Recipe",
+                  headerTintColor: colors.primary,
+                }}
+              />
+            </>
+          )}
+        </Stack.Navigator>
+        {user && <RecipeChat />}
+      </View>
     </NavigationContainer>
   );
 }

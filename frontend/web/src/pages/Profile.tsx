@@ -22,6 +22,23 @@ interface UserProfile {
   avatar_url: string;
 }
 
+const GREEN = {
+  primary: "#2d6a4f",
+  light: "#f0f7f4",
+  mid: "#d0e8dc",
+};
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "11px 14px",
+  borderRadius: 10,
+  border: `1px solid ${GREEN.mid}`,
+  fontSize: 15,
+  outline: "none",
+  backgroundColor: GREEN.light,
+  boxSizing: "border-box",
+};
+
 export default function Profile() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
@@ -70,20 +87,13 @@ export default function Profile() {
 
   const handleUpdateEmail = async () => {
     if (!newEmail) return;
-
     const confirmed = window.confirm(
       `Are you sure you want to change your email to "${newEmail}"?\n\nYou will be logged out and a confirmation email will be sent to your new address. Click the link in the email to confirm the change.`,
     );
-
     if (!confirmed) return;
-
     const { error } = await supabase.auth.updateUser({ email: newEmail });
-    if (error) {
-      setEmailMessage(error.message);
-    } else {
-      // Sign out manually so user knows they need to confirm
-      await supabase.auth.signOut();
-    }
+    if (error) setEmailMessage(error.message);
+    else await supabase.auth.signOut();
   };
 
   const displayName = profile.first_name
@@ -96,7 +106,7 @@ export default function Profile() {
       <div
         style={{
           backgroundColor: "#fff",
-          border: "1px solid #eee",
+          border: `1px solid ${GREEN.mid}`,
           borderRadius: 16,
           padding: 32,
           marginBottom: 32,
@@ -116,15 +126,15 @@ export default function Profile() {
                   width: 72,
                   height: 72,
                   borderRadius: 36,
-                  backgroundColor: "#fdf3e7",
+                  backgroundColor: GREEN.light,
                   overflow: "hidden",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontSize: 28,
                   fontWeight: 700,
-                  color: "#e67e22",
-                  border: "3px solid #eee",
+                  color: GREEN.primary,
+                  border: `3px solid ${GREEN.mid}`,
                   flexShrink: 0,
                 }}
               >
@@ -157,12 +167,14 @@ export default function Profile() {
               <button
                 onClick={() => setEditing(true)}
                 style={{
-                  border: "1px solid #eee",
+                  border: `1px solid ${GREEN.mid}`,
                   background: "#fff",
                   padding: "10px 20px",
                   borderRadius: 10,
                   fontSize: 14,
                   fontWeight: 500,
+                  color: GREEN.primary,
+                  cursor: "pointer",
                 }}
               >
                 Edit Profile
@@ -177,6 +189,7 @@ export default function Profile() {
                   borderRadius: 10,
                   fontSize: 14,
                   fontWeight: 500,
+                  cursor: "pointer",
                 }}
               >
                 Sign out
@@ -222,15 +235,7 @@ export default function Profile() {
                   onChange={(e) =>
                     setForm({ ...form, first_name: e.target.value })
                   }
-                  style={{
-                    width: "100%",
-                    padding: "11px 14px",
-                    borderRadius: 10,
-                    border: "1px solid #eee",
-                    fontSize: 15,
-                    outline: "none",
-                    backgroundColor: "#fafaf8",
-                  }}
+                  style={inputStyle}
                 />
               </div>
               <div>
@@ -251,15 +256,7 @@ export default function Profile() {
                   onChange={(e) =>
                     setForm({ ...form, last_name: e.target.value })
                   }
-                  style={{
-                    width: "100%",
-                    padding: "11px 14px",
-                    borderRadius: 10,
-                    border: "1px solid #eee",
-                    fontSize: 15,
-                    outline: "none",
-                    backgroundColor: "#fafaf8",
-                  }}
+                  style={inputStyle}
                 />
               </div>
             </div>
@@ -286,21 +283,13 @@ export default function Profile() {
                   placeholder="New email address"
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
-                  style={{
-                    flex: 1,
-                    padding: "11px 14px",
-                    borderRadius: 10,
-                    border: "1px solid #eee",
-                    fontSize: 15,
-                    outline: "none",
-                    backgroundColor: "#fafaf8",
-                  }}
+                  style={{ ...inputStyle, flex: 1 }}
                 />
                 <button
                   type="button"
                   onClick={handleUpdateEmail}
                   style={{
-                    backgroundColor: "#e67e22",
+                    backgroundColor: GREEN.primary,
                     color: "#fff",
                     border: "none",
                     padding: "11px 20px",
@@ -308,6 +297,7 @@ export default function Profile() {
                     fontSize: 14,
                     fontWeight: 600,
                     whiteSpace: "nowrap",
+                    cursor: "pointer",
                   }}
                 >
                   Update
@@ -319,14 +309,14 @@ export default function Profile() {
                     fontSize: 13,
                     marginTop: 8,
                     color: emailMessage.includes("sent")
-                      ? "#2e7d32"
+                      ? GREEN.primary
                       : "#e53935",
                     backgroundColor: emailMessage.includes("sent")
-                      ? "#f1f8e9"
+                      ? GREEN.light
                       : "#fff5f5",
                     padding: "8px 12px",
                     borderRadius: 8,
-                    border: `1px solid ${emailMessage.includes("sent") ? "#c5e1a5" : "#ffcdd2"}`,
+                    border: `1px solid ${emailMessage.includes("sent") ? GREEN.mid : "#ffcdd2"}`,
                   }}
                 >
                   {emailMessage}
@@ -346,11 +336,13 @@ export default function Profile() {
                   setNewEmail("");
                 }}
                 style={{
-                  border: "1px solid #eee",
+                  border: `1px solid ${GREEN.mid}`,
                   background: "#fff",
                   padding: "10px 20px",
                   borderRadius: 10,
                   fontSize: 14,
+                  cursor: "pointer",
+                  color: "#555",
                 }}
               >
                 Cancel
@@ -359,13 +351,14 @@ export default function Profile() {
                 onClick={handleSaveProfile}
                 disabled={saving}
                 style={{
-                  backgroundColor: "#e67e22",
+                  backgroundColor: GREEN.primary,
                   color: "#fff",
                   border: "none",
                   padding: "10px 20px",
                   borderRadius: 10,
                   fontSize: 14,
                   fontWeight: 600,
+                  cursor: "pointer",
                 }}
               >
                 {saving ? "Saving..." : "Save Changes"}
@@ -388,13 +381,14 @@ export default function Profile() {
         <button
           onClick={() => navigate("/create")}
           style={{
-            backgroundColor: "#e67e22",
+            backgroundColor: GREEN.primary,
             color: "#fff",
             border: "none",
             padding: "10px 20px",
             borderRadius: 10,
             fontSize: 14,
             fontWeight: 600,
+            cursor: "pointer",
           }}
         >
           + Create Recipe
@@ -413,7 +407,7 @@ export default function Profile() {
             textAlign: "center",
             padding: 80,
             backgroundColor: "#fff",
-            border: "1px solid #eee",
+            border: `1px solid ${GREEN.mid}`,
             borderRadius: 16,
           }}
         >
@@ -427,13 +421,14 @@ export default function Profile() {
           <button
             onClick={() => navigate("/create")}
             style={{
-              backgroundColor: "#e67e22",
+              backgroundColor: GREEN.primary,
               color: "#fff",
               border: "none",
               padding: "12px 24px",
               borderRadius: 10,
               fontSize: 15,
               fontWeight: 600,
+              cursor: "pointer",
             }}
           >
             + Create Recipe
@@ -457,14 +452,14 @@ export default function Profile() {
               borderRadius: 12,
               padding: 20,
               cursor: "pointer",
-              border: "1px solid #eee",
+              border: `1px solid ${GREEN.mid}`,
               transition: "transform 0.1s, box-shadow 0.1s",
             }}
             onMouseEnter={(e) => {
               (e.currentTarget as HTMLDivElement).style.transform =
                 "translateY(-2px)";
               (e.currentTarget as HTMLDivElement).style.boxShadow =
-                "0 4px 20px rgba(0,0,0,0.08)";
+                `0 4px 20px rgba(45,106,79,0.12)`;
             }}
             onMouseLeave={(e) => {
               (e.currentTarget as HTMLDivElement).style.transform =
@@ -476,7 +471,7 @@ export default function Profile() {
               style={{
                 width: "100%",
                 height: 140,
-                backgroundColor: "#fdf3e7",
+                backgroundColor: GREEN.light,
                 borderRadius: 8,
                 marginBottom: 14,
                 overflow: "hidden",

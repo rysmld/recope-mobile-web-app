@@ -112,7 +112,7 @@ export default function RecipeDetail() {
         style={{
           width: "100%",
           height: 280,
-          backgroundColor: "#fdf3e7",
+          backgroundColor: "#eaf4ef",
           borderRadius: 16,
           marginBottom: 28,
           overflow: "hidden",
@@ -213,15 +213,15 @@ export default function RecipeDetail() {
               width: 38,
               height: 38,
               borderRadius: 19,
-              backgroundColor: "#fdf3e7",
+              backgroundColor: "#eaf4ef",
               overflow: "hidden",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontSize: 15,
               fontWeight: 700,
-              color: "#e67e22",
-              border: "2px solid #eee",
+              color: "#2d6a4f",
+              border: "2px solid #95c9b0",
               flexShrink: 0,
             }}
           >
@@ -261,8 +261,8 @@ export default function RecipeDetail() {
                 fontSize: 12,
                 padding: "3px 10px",
                 borderRadius: 20,
-                backgroundColor: "#fdf3e7",
-                color: "#e67e22",
+                backgroundColor: "#eaf4ef",
+                color: "#2d6a4f",
                 fontWeight: 600,
               }}
             >
@@ -330,7 +330,7 @@ export default function RecipeDetail() {
               textAlign: "center",
             }}
           >
-            <div style={{ fontSize: 18, fontWeight: 700, color: "#e67e22" }}>
+            <div style={{ fontSize: 18, fontWeight: 700, color: "#2d6a4f" }}>
               {item.value}
             </div>
             <div style={{ fontSize: 12, color: "#999", marginTop: 2 }}>
@@ -369,7 +369,7 @@ export default function RecipeDetail() {
                 width: 6,
                 height: 6,
                 borderRadius: 3,
-                backgroundColor: "#e67e22",
+                backgroundColor: "#2d6a4f",
                 flexShrink: 0,
               }}
             />
@@ -403,7 +403,7 @@ export default function RecipeDetail() {
                 width: 32,
                 height: 32,
                 borderRadius: 16,
-                backgroundColor: "#e67e22",
+                backgroundColor: "#2d6a4f",
                 color: "#fff",
                 display: "flex",
                 alignItems: "center",

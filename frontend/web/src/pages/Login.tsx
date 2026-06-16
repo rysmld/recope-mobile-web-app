@@ -1,6 +1,24 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
 
+const GREEN = {
+  primary: "#2d6a4f",
+  light: "#f0f7f4",
+  mid: "#d0e8dc",
+};
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "12px 14px",
+  borderRadius: 10,
+  border: `1px solid ${GREEN.mid}`,
+  marginBottom: 12,
+  fontSize: 14,
+  backgroundColor: GREEN.light,
+  outline: "none",
+  boxSizing: "border-box",
+};
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,13 +40,7 @@ export default function Login() {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        height: "100vh",
-        fontFamily: "sans-serif",
-      }}
-    >
+    <div style={{ display: "flex", height: "100vh", fontFamily: "sans-serif" }}>
       {/* LEFT SIDE */}
       <div
         style={{
@@ -36,7 +48,7 @@ export default function Login() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "#fafaf8",
+          backgroundColor: GREEN.light,
         }}
       >
         <div
@@ -45,7 +57,7 @@ export default function Login() {
             backgroundColor: "#fff",
             padding: 40,
             borderRadius: 16,
-            border: "1px solid #eee",
+            border: `1px solid ${GREEN.mid}`,
           }}
         >
           {/* Logo */}
@@ -53,7 +65,7 @@ export default function Login() {
             style={{
               fontSize: 32,
               fontWeight: 800,
-              color: "#e67e22",
+              color: GREEN.primary,
               textAlign: "center",
               marginBottom: 5,
             }}
@@ -72,23 +84,11 @@ export default function Login() {
             Reduce food waste, one recipe at a time
           </p>
 
-          <h2
-            style={{
-              fontSize: 22,
-              fontWeight: 700,
-              marginBottom: 5,
-            }}
-          >
+          <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 5 }}>
             {isSignUp ? "Create Account" : "Welcome Back"}
           </h2>
 
-          <p
-            style={{
-              color: "#777",
-              marginBottom: 20,
-              fontSize: 14,
-            }}
-          >
+          <p style={{ color: "#777", marginBottom: 20, fontSize: 14 }}>
             {isSignUp
               ? "Sign up to start generating recipes"
               : "Sign in to continue"}
@@ -134,13 +134,14 @@ export default function Login() {
               style={{
                 width: "100%",
                 padding: 14,
-                backgroundColor: "#e67e22",
+                backgroundColor: GREEN.primary,
                 color: "#fff",
                 border: "none",
                 borderRadius: 10,
                 fontWeight: 600,
                 marginTop: 10,
                 cursor: "pointer",
+                fontSize: 15,
               }}
             >
               {loading ? "Loading..." : isSignUp ? "Create Account" : "Sign In"}
@@ -156,16 +157,16 @@ export default function Login() {
             }}
           >
             {isSignUp ? "Already have an account?" : "Don't have an account?"}
-
             <button
               onClick={() => setIsSignUp(!isSignUp)}
               style={{
                 marginLeft: 6,
                 background: "none",
                 border: "none",
-                color: "#e67e22",
+                color: GREEN.primary,
                 fontWeight: 600,
                 cursor: "pointer",
+                fontSize: 14,
               }}
             >
               {isSignUp ? "Sign in" : "Sign up"}
@@ -178,7 +179,7 @@ export default function Login() {
       <div
         style={{
           flex: 1,
-          backgroundColor: "#e67e22",
+          backgroundColor: GREEN.primary,
           color: "white",
           display: "flex",
           flexDirection: "column",
@@ -189,7 +190,6 @@ export default function Login() {
         <h1 style={{ fontSize: 32, marginBottom: 30 }}>
           Smart Recipe Recommendations
         </h1>
-
         <ul style={{ lineHeight: "2", fontSize: 16 }}>
           <li>✔ Match recipes with available ingredients</li>
           <li>✔ Reduce food waste</li>
@@ -200,13 +200,3 @@ export default function Login() {
     </div>
   );
 }
-
-const inputStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "12px 14px",
-  borderRadius: 10,
-  border: "1px solid #eee",
-  marginBottom: 12,
-  fontSize: 14,
-  backgroundColor: "#fafaf8",
-};

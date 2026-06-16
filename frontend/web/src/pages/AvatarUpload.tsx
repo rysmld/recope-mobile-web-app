@@ -8,6 +8,12 @@ interface Props {
   onUpload: (url: string) => void;
 }
 
+const GREEN = {
+  primary: "#2d6a4f",
+  light: "#f0f7f4",
+  mid: "#d0e8dc",
+};
+
 export default function AvatarUpload({
   currentAvatar,
   firstName,
@@ -40,7 +46,6 @@ export default function AvatarUpload({
     }
 
     const { data } = supabase.storage.from("avatars").getPublicUrl(fileName);
-
     onUpload(data.publicUrl);
     setUploading(false);
   };
@@ -60,13 +65,13 @@ export default function AvatarUpload({
           width: 100,
           height: 100,
           borderRadius: 50,
-          backgroundColor: "#fdf3e7",
+          backgroundColor: GREEN.light,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           overflow: "hidden",
           cursor: "pointer",
-          border: "3px solid #eee",
+          border: `3px solid ${GREEN.mid}`,
           position: "relative",
         }}
       >
@@ -77,7 +82,7 @@ export default function AvatarUpload({
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         ) : (
-          <span style={{ fontSize: 36, fontWeight: 700, color: "#e67e22" }}>
+          <span style={{ fontSize: 36, fontWeight: 700, color: GREEN.primary }}>
             {firstName?.charAt(0).toUpperCase() ||
               user?.email?.charAt(0).toUpperCase()}
           </span>
@@ -93,7 +98,7 @@ export default function AvatarUpload({
               justifyContent: "center",
             }}
           >
-            <span style={{ fontSize: 11, color: "#e67e22" }}>...</span>
+            <span style={{ fontSize: 11, color: GREEN.primary }}>...</span>
           </div>
         )}
       </div>
@@ -103,10 +108,11 @@ export default function AvatarUpload({
         style={{
           background: "none",
           border: "none",
-          color: "#e67e22",
+          color: GREEN.primary,
           fontSize: 13,
           marginTop: 8,
           cursor: "pointer",
+          fontWeight: 500,
         }}
       >
         {uploading ? "Uploading..." : "Change photo"}

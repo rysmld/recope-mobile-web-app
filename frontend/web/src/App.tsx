@@ -55,12 +55,12 @@ function Navbar() {
           style={{
             fontSize: 24,
             fontWeight: 800,
-            color: "#e67e22",
+            color: "#2d6a4f",
             cursor: "pointer",
             letterSpacing: "-0.5px",
           }}
         >
-          Recope
+          ReCope
         </h1>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <button
@@ -142,13 +142,13 @@ function Navbar() {
                   width: 24,
                   height: 24,
                   borderRadius: 12,
-                  backgroundColor: "#fdf3e7",
+                  backgroundColor: "#eaf4ef",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontSize: 12,
                   fontWeight: 700,
-                  color: "#e67e22",
+                  color: "#2d6a4f",
                 }}
               >
                 {displayName?.charAt(0).toUpperCase()}
@@ -160,7 +160,7 @@ function Navbar() {
           <button
             onClick={() => navigate("/create")}
             style={{
-              backgroundColor: "#e67e22",
+              backgroundColor: "#2d6a4f",
               color: "#fff",
               border: "none",
               padding: "8px 16px",

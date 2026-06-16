@@ -63,7 +63,7 @@ export default function ImageUpload({ currentImage, onUpload }: Props) {
           height: 220,
           borderRadius: 12,
           border: "2px dashed #eee",
-          backgroundColor: "#fafaf8",
+          backgroundColor: "#f4faf7",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -97,7 +97,7 @@ export default function ImageUpload({ currentImage, onUpload }: Props) {
               justifyContent: "center",
             }}
           >
-            <p style={{ color: "#e67e22", fontWeight: 600 }}>Uploading...</p>
+            <p style={{ color: "#2d6a4f", fontWeight: 600 }}>Uploading...</p>
           </div>
         )}
       </div>

@@ -148,12 +148,12 @@ export default function RecipeChat() {
           width: 56,
           height: 56,
           borderRadius: 28,
-          backgroundColor: "#e67e22",
+          backgroundColor: "#2d6a4f",
           color: "#fff",
           border: "none",
           fontSize: 24,
           cursor: "pointer",
-          boxShadow: "0 4px 20px rgba(230,126,34,0.4)",
+          boxShadow: "0 4px 20px rgba(45,106,79,0.4)",
           zIndex: 1000,
           display: "flex",
           alignItems: "center",
@@ -188,7 +188,7 @@ export default function RecipeChat() {
             style={{
               padding: "14px 20px",
               borderBottom: "1px solid #eee",
-              backgroundColor: "#e67e22",
+              backgroundColor: "#2d6a4f",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
@@ -266,7 +266,7 @@ export default function RecipeChat() {
                             ? "12px 12px 2px 12px"
                             : "12px 12px 12px 2px",
                         backgroundColor:
-                          msg.role === "user" ? "#e67e22" : "#f5f5f5",
+                          msg.role === "user" ? "#2d6a4f" : "#f5f5f5",
                         color: msg.role === "user" ? "#fff" : "#1a1a1a",
                         fontSize: 14,
                         lineHeight: 1.5,
@@ -281,10 +281,10 @@ export default function RecipeChat() {
                     <div
                       style={{
                         marginTop: 10,
-                        backgroundColor: "#fdf3e7",
+                        backgroundColor: "#eaf4ef",
                         borderRadius: 12,
                         padding: 14,
-                        border: "1px solid #f0c080",
+                        border: "1px solid #95c9b0",
                       }}
                     >
                       <h4
@@ -327,7 +327,7 @@ export default function RecipeChat() {
                         disabled={saving}
                         style={{
                           width: "100%",
-                          backgroundColor: "#e67e22",
+                          backgroundColor: "#2d6a4f",
                           color: "#fff",
                           border: "none",
                           borderRadius: 8,
@@ -384,7 +384,7 @@ export default function RecipeChat() {
                 border: "1px solid #eee",
                 fontSize: 14,
                 outline: "none",
-                backgroundColor: "#fafaf8",
+                backgroundColor: "#f4faf7",
               }}
             />
             <button
@@ -392,7 +392,7 @@ export default function RecipeChat() {
               disabled={loading || !input.trim()}
               style={{
                 backgroundColor:
-                  loading || !input.trim() ? "#f0c080" : "#e67e22",
+                  loading || !input.trim() ? "#95c9b0" : "#2d6a4f",
                 color: "#fff",
                 border: "none",
                 borderRadius: 10,

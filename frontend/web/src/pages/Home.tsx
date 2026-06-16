@@ -51,6 +51,16 @@ const COOK_DURATIONS = [
 ];
 const PREVIEW_COUNT = 4;
 
+// Forest green palette
+const GREEN = {
+  primary: "#2d6a4f",
+  light: "#f0f7f4",
+  mid: "#d0e8dc",
+  badge: "#d8f3dc",
+  badgeText: "#1b4332",
+  hover: "rgba(45,106,79,0.12)",
+};
+
 export default function Home() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [matched, setMatched] = useState<Recipe[]>([]);
@@ -106,7 +116,6 @@ export default function Home() {
     (a, b) =>
       new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
   );
-
   const popularRecipes = [...recipes].sort(
     (a, b) => b.view_count - a.view_count,
   );
@@ -121,12 +130,28 @@ export default function Home() {
   const chipStyle = (active: boolean): React.CSSProperties => ({
     padding: "6px 14px",
     borderRadius: 20,
-    border: `1px solid ${active ? "#e67e22" : "#eee"}`,
-    backgroundColor: active ? "#fdf3e7" : "#fff",
-    color: active ? "#e67e22" : "#666",
+    border: `1px solid ${active ? GREEN.primary : "#eee"}`,
+    backgroundColor: active ? GREEN.light : "#fff",
+    color: active ? GREEN.primary : "#666",
     fontSize: 13,
     fontWeight: active ? 600 : 400,
     cursor: "pointer",
+  });
+
+  const filterSelectStyle = (active: boolean): React.CSSProperties => ({
+    padding: "12px 32px 12px 14px",
+    borderRadius: 10,
+    border: `1px solid ${active ? GREEN.primary : "#eee"}`,
+    backgroundColor: active ? GREEN.light : "#fff",
+    color: active ? GREEN.primary : "#666",
+    fontSize: 14,
+    fontWeight: active ? 600 : 400,
+    outline: "none",
+    cursor: "pointer",
+    appearance: "none",
+    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232d6a4f' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "right 12px center",
   });
 
   const RecipeCard = ({
@@ -143,7 +168,7 @@ export default function Home() {
         borderRadius: 12,
         padding: 20,
         cursor: "pointer",
-        border: highlighted ? "2px solid #e67e22" : "1px solid #eee",
+        border: highlighted ? `2px solid ${GREEN.primary}` : "1px solid #eee",
         position: "relative",
         transition: "transform 0.1s, box-shadow 0.1s",
       }}
@@ -151,7 +176,7 @@ export default function Home() {
         (e.currentTarget as HTMLDivElement).style.transform =
           "translateY(-2px)";
         (e.currentTarget as HTMLDivElement).style.boxShadow = highlighted
-          ? "0 4px 20px rgba(230,126,34,0.15)"
+          ? `0 4px 20px ${GREEN.hover}`
           : "0 4px 20px rgba(0,0,0,0.08)";
       }}
       onMouseLeave={(e) => {
@@ -165,7 +190,7 @@ export default function Home() {
             position: "absolute",
             top: 12,
             right: 12,
-            backgroundColor: "#e67e22",
+            backgroundColor: GREEN.primary,
             color: "#fff",
             fontSize: 12,
             fontWeight: 700,
@@ -194,8 +219,8 @@ export default function Home() {
                 fontSize: 11,
                 padding: "2px 8px",
                 borderRadius: 20,
-                backgroundColor: "#fdf3e7",
-                color: "#e67e22",
+                backgroundColor: GREEN.light,
+                color: GREEN.primary,
                 fontWeight: 600,
               }}
             >
@@ -238,7 +263,7 @@ export default function Home() {
         style={{
           width: "100%",
           height: 140,
-          backgroundColor: "#fdf3e7",
+          backgroundColor: GREEN.light,
           borderRadius: 8,
           marginBottom: 14,
           overflow: "hidden",
@@ -288,16 +313,16 @@ export default function Home() {
             width: 22,
             height: 22,
             borderRadius: 11,
-            backgroundColor: "#fdf3e7",
+            backgroundColor: GREEN.light,
             overflow: "hidden",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             fontSize: 10,
             fontWeight: 700,
-            color: "#e67e22",
+            color: GREEN.primary,
             flexShrink: 0,
-            border: "1px solid #eee",
+            border: `1px solid ${GREEN.mid}`,
           }}
         >
           {recipe.profiles?.avatar_url ? (
@@ -339,7 +364,7 @@ export default function Home() {
         <p
           style={{
             fontSize: 13,
-            color: "#e67e22",
+            color: GREEN.primary,
             fontWeight: 500,
             marginTop: 8,
           }}
@@ -382,12 +407,13 @@ export default function Home() {
           onClick={onToggle}
           style={{
             background: "none",
-            border: "1px solid #eee",
+            border: `1px solid ${GREEN.mid}`,
             padding: "8px 16px",
             borderRadius: 8,
             fontSize: 13,
-            color: "#666",
+            color: GREEN.primary,
             cursor: "pointer",
+            fontWeight: 500,
           }}
         >
           {showAll ? "Show Less ↑" : `See All (${total}) →`}
@@ -428,12 +454,13 @@ export default function Home() {
               onClick={() => navigate("/pantry")}
               style={{
                 background: "none",
-                border: "1px solid #eee",
+                border: `1px solid ${GREEN.mid}`,
                 padding: "8px 14px",
                 borderRadius: 8,
                 fontSize: 13,
-                color: "#666",
+                color: GREEN.primary,
                 cursor: "pointer",
+                fontWeight: 500,
               }}
             >
               Manage Pantry
@@ -496,21 +523,7 @@ export default function Home() {
         <select
           value={mealFilter}
           onChange={(e) => setMealFilter(e.target.value)}
-          style={{
-            padding: "12px 32px 12px 14px",
-            borderRadius: 10,
-            border: `1px solid ${mealFilter !== "All" ? "#e67e22" : "#eee"}`,
-            backgroundColor: mealFilter !== "All" ? "#fdf3e7" : "#fff",
-            color: mealFilter !== "All" ? "#e67e22" : "#666",
-            fontSize: 14,
-            fontWeight: mealFilter !== "All" ? 600 : 400,
-            outline: "none",
-            cursor: "pointer",
-            appearance: "none",
-            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "right 12px center",
-          }}
+          style={filterSelectStyle(mealFilter !== "All")}
         >
           {MEAL_TYPES.map((type) => (
             <option key={type} value={type}>
@@ -522,21 +535,7 @@ export default function Home() {
         <select
           value={cuisineFilter}
           onChange={(e) => setCuisineFilter(e.target.value)}
-          style={{
-            padding: "12px 32px 12px 14px",
-            borderRadius: 10,
-            border: `1px solid ${cuisineFilter !== "All" ? "#e67e22" : "#eee"}`,
-            backgroundColor: cuisineFilter !== "All" ? "#fdf3e7" : "#fff",
-            color: cuisineFilter !== "All" ? "#e67e22" : "#666",
-            fontSize: 14,
-            fontWeight: cuisineFilter !== "All" ? 600 : 400,
-            outline: "none",
-            cursor: "pointer",
-            appearance: "none",
-            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "right 12px center",
-          }}
+          style={filterSelectStyle(cuisineFilter !== "All")}
         >
           {CUISINE_TYPES.map((type) => (
             <option key={type} value={type}>
@@ -548,21 +547,7 @@ export default function Home() {
         <select
           value={durationFilter}
           onChange={(e) => setDurationFilter(e.target.value)}
-          style={{
-            padding: "12px 32px 12px 14px",
-            borderRadius: 10,
-            border: `1px solid ${durationFilter !== "All" ? "#e67e22" : "#eee"}`,
-            backgroundColor: durationFilter !== "All" ? "#fdf3e7" : "#fff",
-            color: durationFilter !== "All" ? "#e67e22" : "#666",
-            fontSize: 14,
-            fontWeight: durationFilter !== "All" ? 600 : 400,
-            outline: "none",
-            cursor: "pointer",
-            appearance: "none",
-            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "right 12px center",
-          }}
+          style={filterSelectStyle(durationFilter !== "All")}
         >
           {COOK_DURATIONS.map((type) => (
             <option key={type} value={type}>

@@ -42,10 +42,11 @@ export default function CreateRecipe() {
         style={{
           background: "none",
           border: "none",
-          color: "#999",
+          color: "#2d6a4f",
           fontSize: 14,
           marginBottom: 24,
           cursor: "pointer",
+          fontWeight: 500,
         }}
       >
         ← Back
