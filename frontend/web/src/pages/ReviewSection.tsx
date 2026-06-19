@@ -46,15 +46,15 @@ export default function ReviewSection({ recipeId }: Props) {
   const [editIsGood, setEditIsGood] = useState<boolean | null>(null);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    fetchReviews();
-  }, [recipeId]);
-
   const fetchReviews = async () => {
     const data = await api.get(`/api/reviews/${recipeId}`);
     if (Array.isArray(data)) setReviews(data);
     setLoading(false);
   };
+
+  useEffect(() => {
+    fetchReviews();
+  }, [recipeId, fetchReviews]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
