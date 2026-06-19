@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import { useAuth } from "../context/AuthContext";
+import ReviewSection from "../pages/ReviewSection";
 
 interface Recipe {
   id: string;
@@ -427,6 +428,7 @@ export default function RecipeDetail() {
             </p>
           </div>
         ))}
+        <ReviewSection recipeId={id!} />
       </div>
     </div>
   );

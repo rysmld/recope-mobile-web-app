@@ -16,6 +16,8 @@ interface Recipe {
   cook_duration: string;
   view_count: number;
   created_at: string;
+  avg_rating: number;
+  review_count: number;
   profiles: {
     username: string;
     first_name: string;
@@ -51,7 +53,6 @@ const COOK_DURATIONS = [
 ];
 const PREVIEW_COUNT = 4;
 
-// Forest green palette
 const GREEN = {
   primary: "#2d6a4f",
   light: "#f0f7f4",
@@ -126,17 +127,6 @@ export default function Home() {
       return `${profiles.first_name} ${profiles.last_name || ""}`.trim();
     return profiles.username || "Unknown";
   };
-
-  // const chipStyle = (active: boolean): React.CSSProperties => ({
-  //   padding: "6px 14px",
-  //   borderRadius: 20,
-  //   border: `1px solid ${active ? GREEN.primary : "#eee"}`,
-  //   backgroundColor: active ? GREEN.light : "#fff",
-  //   color: active ? GREEN.primary : "#666",
-  //   fontSize: 13,
-  //   fontWeight: active ? 600 : 400,
-  //   cursor: "pointer",
-  // });
 
   const filterSelectStyle = (active: boolean): React.CSSProperties => ({
     padding: "12px 32px 12px 14px",
@@ -284,9 +274,35 @@ export default function Home() {
         )}
       </div>
 
+      {/* Title */}
       <h3 style={{ fontSize: 17, fontWeight: 600, marginBottom: 6 }}>
         {recipe.title}
       </h3>
+
+      {/* Rating */}
+      {recipe.avg_rating > 0 && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            marginBottom: 8,
+          }}
+        >
+          <span style={{ color: "#f59e0b", fontSize: 14 }}>
+            {"★".repeat(Math.round(recipe.avg_rating))}
+            {"☆".repeat(5 - Math.round(recipe.avg_rating))}
+          </span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: "#f59e0b" }}>
+            {Number(recipe.avg_rating).toFixed(1)}
+          </span>
+          <span style={{ fontSize: 12, color: "#999" }}>
+            ({recipe.review_count})
+          </span>
+        </div>
+      )}
+
+      {/* Description */}
       <p
         style={{
           color: "#999",
