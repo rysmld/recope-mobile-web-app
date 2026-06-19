@@ -40,7 +40,7 @@ export default function Admin() {
       setLoading(false);
     };
     fetchData();
-  }, [isAdmin]);
+  }, [isAdmin, navigate]);
 
   if (!isAdmin) return null;
   if (loading)
