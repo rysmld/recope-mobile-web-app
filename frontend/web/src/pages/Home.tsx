@@ -127,16 +127,16 @@ export default function Home() {
     return profiles.username || "Unknown";
   };
 
-  const chipStyle = (active: boolean): React.CSSProperties => ({
-    padding: "6px 14px",
-    borderRadius: 20,
-    border: `1px solid ${active ? GREEN.primary : "#eee"}`,
-    backgroundColor: active ? GREEN.light : "#fff",
-    color: active ? GREEN.primary : "#666",
-    fontSize: 13,
-    fontWeight: active ? 600 : 400,
-    cursor: "pointer",
-  });
+  // const chipStyle = (active: boolean): React.CSSProperties => ({
+  //   padding: "6px 14px",
+  //   borderRadius: 20,
+  //   border: `1px solid ${active ? GREEN.primary : "#eee"}`,
+  //   backgroundColor: active ? GREEN.light : "#fff",
+  //   color: active ? GREEN.primary : "#666",
+  //   fontSize: 13,
+  //   fontWeight: active ? 600 : 400,
+  //   cursor: "pointer",
+  // });
 
   const filterSelectStyle = (active: boolean): React.CSSProperties => ({
     padding: "12px 32px 12px 14px",

@@ -24,7 +24,7 @@ export default function RecipeChat() {
     if (open && messages.length === 0) {
       fetchHistory();
     }
-  }, [open]);
+  }, [open, messages.length]);
 
   const fetchHistory = async () => {
     setLoadingHistory(true);
