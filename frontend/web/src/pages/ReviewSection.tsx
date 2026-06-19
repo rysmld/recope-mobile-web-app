@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import api from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 import StarRating from "./StarRating";
@@ -46,20 +46,23 @@ export default function ReviewSection({ recipeId }: Props) {
   const [editIsGood, setEditIsGood] = useState<boolean | null>(null);
   const [error, setError] = useState("");
 
-  const fetchReviews = useCallback(async () => {
+  const fetchReviews = async () => {
     try {
       const res = await api.get(`/api/reviews/${recipeId}`);
-      const data = res.data;
-
-      if (Array.isArray(data)) setReviews(data);
+      setReviews(res.data);
+    } catch (err) {
+      console.error(err);
     } finally {
       setLoading(false);
     }
-  }, [recipeId]);
+  };
 
   useEffect(() => {
+    if (!recipeId) return;
+
+    setLoading(true);
     fetchReviews();
-  }, [fetchReviews]);
+  }, [recipeId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
