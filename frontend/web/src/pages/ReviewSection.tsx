@@ -48,7 +48,7 @@ export default function ReviewSection({ recipeId }: Props) {
 
   useEffect(() => {
     fetchReviews();
-  }, [recipeId]);
+  }, [recipeId, fetchReviews]);
 
   const fetchReviews = async () => {
     const data = await api.get(`/api/reviews/${recipeId}`);
