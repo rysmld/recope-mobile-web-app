@@ -46,12 +46,10 @@ export default function ReviewSection({ recipeId }: Props) {
   const [editIsGood, setEditIsGood] = useState<boolean | null>(null);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    fetchReviews();
-  }, [recipeId, fetchReviews]);
-
   const fetchReviews = async () => {
-    const data = await api.get(`/api/reviews/${recipeId}`);
+    const res = await api.get(`/api/reviews/${recipeId}`);
+    const data = res.data;
+
     if (Array.isArray(data)) setReviews(data);
     setLoading(false);
   };
